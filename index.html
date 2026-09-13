@@ -6,21 +6,25 @@
 <title>Skills4Future feedback</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Kalam:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#F6F5F1;
-    --ink:#1E2A32;
-    --ink-soft:#5B6B72;
+    --ink:#2B2B26;
+    --ink-soft:#6B655A;
     --line:#E3E0D6;
-    --card:#FFFFFF;
     --accent:#0F766E;
-    --accent-soft:#E4F2F0;
-    --dept-cse:#0F766E;
-    --dept-it:#4A5FC1;
-    --dept-mech:#C08A2E;
-    --dept-ece:#B4525A;
-    --dept-other:#64748B;
+
+    --cse:#FFE895;   /* yellow  */
+    --cse-tape:#E8C24A;
+    --it:#CFE7FF;    /* blue    */
+    --it-tape:#8FB9E8;
+    --mech:#FFD9C2;  /* peach   */
+    --mech-tape:#E8A97C;
+    --ece:#DCF2D3;   /* mint    */
+    --ece-tape:#9FCB8C;
+    --other:#EDE3FA; /* lavender*/
+    --other-tape:#C7A9E8;
   }
 
   *{ box-sizing:border-box; }
@@ -48,7 +52,7 @@
     gap:20px;
     flex-wrap:wrap;
     padding-bottom:28px;
-    margin-bottom:28px;
+    margin-bottom:40px;
     border-bottom:1px solid var(--line);
   }
 
@@ -110,68 +114,151 @@
     50%{ opacity:.35; }
   }
 
-  .feed{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:14px;
-  }
-  @media (min-width:680px){
-    .feed{ grid-template-columns:1fr 1fr; }
+  /* ---- Stack ---- */
+
+  .stage{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
   }
 
-  .card{
-    background:var(--card);
+  .nav-btn{
+    flex:none;
+    width:44px;
+    height:44px;
+    border-radius:50%;
     border:1px solid var(--line);
-    border-left:3px solid var(--dept-other);
-    border-radius:6px;
-    padding:16px 18px;
-    animation:enter .35s ease both;
+    background:#fff;
+    color:var(--ink);
+    font-size:18px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color .15s ease, color .15s ease, transform .1s ease;
   }
-  @keyframes enter{
-    from{ opacity:0; transform:translateY(6px); }
-    to{ opacity:1; transform:translateY(0); }
+  .nav-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
+  .nav-btn:active:not(:disabled){ transform:scale(.94); }
+  .nav-btn:disabled{ opacity:.3; cursor:default; }
+  .nav-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .note-stack{
+    position:relative;
+    width:100%;
+    max-width:460px;
+    min-height:280px;
+  }
+
+  .note-shadow{
+    position:absolute;
+    inset:0;
+    border-radius:3px;
+    background:#EDE9DD;
+    border:1px solid var(--line);
+  }
+  .note-shadow.s1{ transform:rotate(-4deg) translateY(6px); z-index:1; }
+  .note-shadow.s2{ transform:rotate(3deg) translateY(3px); z-index:2; opacity:.85; }
+
+  .note{
+    position:relative;
+    z-index:3;
+    border-radius:3px;
+    padding:30px 26px 26px;
+    min-height:280px;
+    box-shadow:0 10px 24px rgba(30,20,10,.14);
+    animation:pop .28s ease both;
+  }
+  @keyframes pop{
+    from{ opacity:0; transform:scale(.96) rotate(var(--rot)); }
+    to{ opacity:1; transform:scale(1) rotate(var(--rot)); }
   }
   @media (prefers-reduced-motion: reduce){
-    .card, .dot.live{ animation:none; }
+    .note, .dot.live{ animation:none; }
   }
 
-  .card.cse{ border-left-color:var(--dept-cse); }
-  .card.it{ border-left-color:var(--dept-it); }
-  .card.mech{ border-left-color:var(--dept-mech); }
-  .card.ece{ border-left-color:var(--dept-ece); }
+  .note::after{
+    content:"";
+    position:absolute;
+    right:0; bottom:0;
+    width:0; height:0;
+    border-style:solid;
+    border-width:0 0 22px 22px;
+    border-color:transparent transparent rgba(0,0,0,.08) transparent;
+  }
 
-  .card-top{
+  .note.cse{ background:var(--cse); }
+  .note.it{ background:var(--it); }
+  .note.mech{ background:var(--mech); }
+  .note.ece{ background:var(--ece); }
+  .note.other{ background:var(--other); }
+
+  .tape{
+    position:absolute;
+    top:-10px;
+    left:50%;
+    width:78px;
+    height:22px;
+    transform:translateX(-50%) rotate(-2deg);
+    opacity:.85;
+    border-radius:1px;
+  }
+  .tape.cse{ background:var(--cse-tape); }
+  .tape.it{ background:var(--it-tape); }
+  .tape.mech{ background:var(--mech-tape); }
+  .tape.ece{ background:var(--ece-tape); }
+  .tape.other{ background:var(--other-tape); }
+
+  .note-top{
     display:flex;
     justify-content:space-between;
     align-items:baseline;
     gap:10px;
-    margin-bottom:8px;
+    margin-bottom:2px;
   }
 
-  .card-name{
+  .note-name{
+    font-family:'Inter', sans-serif;
     font-weight:600;
-    font-size:15px;
+    font-size:16px;
   }
 
-  .card-when{
-    font-size:12px;
+  .note-when{
+    font-size:11px;
     color:var(--ink-soft);
     white-space:nowrap;
   }
 
-  .card-dept{
-    display:inline-block;
+  .note-meta{
+    margin:2px 0 14px;
+  }
+  .note-dept{
+    display:block;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+  }
+  .note-date{
+    display:block;
     font-size:12px;
     color:var(--ink-soft);
-    margin-bottom:10px;
+    margin-top:1px;
   }
 
-  .card-text{
-    font-size:14px;
-    line-height:1.55;
+  .note-text{
+    font-family:'Kalam', cursive;
+    font-size:19px;
+    line-height:1.5;
     color:var(--ink);
     white-space:pre-wrap;
     margin:0;
+  }
+
+  .counter{
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:18px;
   }
 
   .empty, .error{
@@ -199,16 +286,10 @@
   }
   .error button:hover{ border-color:var(--accent); color:var(--accent); }
 
-  .skeleton{
-    height:96px;
-    border-radius:6px;
-    background:linear-gradient(90deg, var(--line) 25%, #EEEBE0 37%, var(--line) 63%);
-    background-size:400% 100%;
-    animation:shimmer 1.4s ease infinite;
-  }
-  @keyframes shimmer{
-    0%{ background-position:100% 0; }
-    100%{ background-position:0 0; }
+  @media (max-width:520px){
+    .stage{ gap:10px; }
+    .nav-btn{ width:38px; height:38px; font-size:16px; }
+    .note{ padding:26px 18px 22px; }
   }
 </style>
 </head>
@@ -228,12 +309,12 @@
       </div>
     </header>
 
-    <div class="feed" id="feed">
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
+    <div class="stage" id="stage">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous feedback">&#8249;</button>
+      <div class="note-stack" id="noteStack"></div>
+      <button class="nav-btn" id="nextBtn" aria-label="Next feedback">&#8250;</button>
     </div>
+    <div class="counter" id="counter"></div>
 
     <div class="error" id="errorBox">
       <h2>Couldn't load feedback</h2>
@@ -248,7 +329,7 @@
   // 2. In that Sheet: File > Share > Publish to web > select the responses
   //    sheet/tab > format "Comma-separated values (.csv)" > Publish.
   // 3. Paste the resulting URL below.
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEijSktyMFps2lbOAFbmWnsVq_fBDvRuU-4WGzcAyOFNYy0uurEWdkHqYMODZCIJYmsM0aCKd3CoSr/pub?output=csv";
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEijSktyMFps2lbOAFbmWnsVq_fBDvRuU-4WGzcAyOFNYy0uurEWdkHqYMODZCIJYmsM0aCKd3CoSr/pubhtml";
 
   // Paste the public Google Form URL (the one people fill out, not the edit link).
   const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdbmmTHeo_-FzT_Pd8ygLvQNYNpaz3HCngapg0JvTjN0fXY7Q/viewform?usp=header";
@@ -257,14 +338,22 @@
 
   document.getElementById('addBtn').href = FORM_URL;
 
-  const feedEl = document.getElementById('feed');
+  const stage = document.getElementById('stage');
+  const noteStack = document.getElementById('noteStack');
+  const counterEl = document.getElementById('counter');
   const statusEl = document.getElementById('statusText');
   const dotEl = document.getElementById('liveDot');
   const errorBox = document.getElementById('errorBox');
   const retryBtn = document.getElementById('retryBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
-  let knownKeys = new Set();
+  let records = [];
+  let index = 0;
+  let currentKey = null;
   let firstLoad = true;
+
+  function recKey(rec){ return rec.timestamp + '|' + rec.name; }
 
   function deptClass(dept){
     const d = (dept || '').toLowerCase();
@@ -272,7 +361,7 @@
     if (d.includes('information')) return 'it';
     if (d.includes('mechanical')) return 'mech';
     if (d.includes('electronics')) return 'ece';
-    return '';
+    return 'other';
   }
 
   function shortDept(dept){
@@ -296,6 +385,21 @@
     const diffDay = Math.round(diffHr / 24);
     if (diffDay < 7) return diffDay + (diffDay === 1 ? ' day ago' : ' days ago');
     return then.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+  }
+
+  function formatDate(dateStr){
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  // Small deterministic hash so each note keeps the same tilt across re-renders.
+  function tiltFor(key){
+    let h = 0;
+    for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
+    const deg = (Math.abs(h) % 700) / 100 - 3.5; // -3.5..3.5
+    return deg;
   }
 
   // Minimal CSV parser that handles quoted fields, embedded commas/newlines.
@@ -328,81 +432,127 @@
       timestamp: header.findIndex(h => h.includes('timestamp')),
       name: header.findIndex(h => h === 'name'),
       dept: header.findIndex(h => h.includes('department')),
+      date: header.findIndex(h => h === 'date'),
       feedback: header.findIndex(h => h.includes('feedback')),
     };
     return rows.slice(1).map(r => ({
       timestamp: idx.timestamp > -1 ? r[idx.timestamp] : '',
       name: (idx.name > -1 ? r[idx.name] : '').trim() || 'Anonymous',
       department: idx.dept > -1 ? r[idx.dept] : '',
+      date: idx.date > -1 ? r[idx.date] : '',
       feedback: idx.feedback > -1 ? r[idx.feedback] : '',
     }));
   }
 
-  function renderEmpty(){
-    feedEl.innerHTML = '';
-    feedEl.style.display = 'none';
+  function showEmpty(){
+    stage.style.display = 'none';
+    counterEl.style.display = 'none';
+    errorBox.style.display = 'none';
     let empty = document.getElementById('emptyBox');
     if (!empty){
       empty = document.createElement('div');
       empty.id = 'emptyBox';
       empty.className = 'empty';
       empty.innerHTML = '<h2>No feedback yet</h2><p>Be the first to share yours.</p>';
-      feedEl.parentNode.insertBefore(empty, errorBox);
+      stage.parentNode.insertBefore(empty, errorBox);
     }
     empty.style.display = 'block';
   }
 
-  function renderCard(rec){
-    const card = document.createElement('div');
-    card.className = 'card ' + deptClass(rec.department);
-    card.innerHTML = `
-      <div class="card-top">
-        <span class="card-name"></span>
-        <span class="card-when"></span>
-      </div>
-      <div class="card-dept"></div>
-      <p class="card-text"></p>
-    `;
-    card.querySelector('.card-name').textContent = rec.name;
-    card.querySelector('.card-when').textContent = relativeTime(rec.timestamp);
-    card.querySelector('.card-dept').textContent = shortDept(rec.department);
-    card.querySelector('.card-text').textContent = rec.feedback;
-    return card;
+  function hideEmpty(){
+    const empty = document.getElementById('emptyBox');
+    if (empty) empty.style.display = 'none';
+    stage.style.display = 'flex';
+    counterEl.style.display = 'block';
   }
 
-  function render(records){
-    errorBox.style.display = 'none';
-    feedEl.style.display = 'grid';
-    const emptyBox = document.getElementById('emptyBox');
-    if (emptyBox) emptyBox.style.display = 'none';
-
+  function renderStack(){
     if (!records.length){
-      renderEmpty();
+      showEmpty();
       statusEl.textContent = 'Live · 0 responses';
       return;
     }
+    hideEmpty();
+    errorBox.style.display = 'none';
 
-    // newest first
-    records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const rec = records[index];
+    const cls = deptClass(rec.department);
+    const key = recKey(rec);
+    const rot = tiltFor(key);
 
-    if (firstLoad){
-      feedEl.innerHTML = '';
-      records.forEach(rec => {
-        knownKeys.add(rec.timestamp + '|' + rec.name);
-        feedEl.appendChild(renderCard(rec));
-      });
-      firstLoad = false;
-    } else {
-      records.forEach(rec => {
-        const key = rec.timestamp + '|' + rec.name;
-        if (!knownKeys.has(key)){
-          knownKeys.add(key);
-          feedEl.insertBefore(renderCard(rec), feedEl.firstChild);
-        }
-      });
-    }
+    noteStack.innerHTML = `
+      <div class="note-shadow s1"></div>
+      <div class="note-shadow s2"></div>
+      <div class="note ${cls}" style="--rot:${rot}deg; transform:rotate(${rot}deg);">
+        <div class="tape ${cls}"></div>
+        <div class="note-top">
+          <span class="note-name"></span>
+          <span class="note-when"></span>
+        </div>
+        <div class="note-meta">
+          <span class="note-dept"></span>
+          <span class="note-date"></span>
+        </div>
+        <p class="note-text"></p>
+      </div>
+    `;
+    noteStack.querySelector('.note-name').textContent = rec.name;
+    noteStack.querySelector('.note-when').textContent = relativeTime(rec.timestamp);
+    noteStack.querySelector('.note-dept').textContent = shortDept(rec.department);
+    noteStack.querySelector('.note-date').textContent = formatDate(rec.date);
+    noteStack.querySelector('.note-text').textContent = rec.feedback;
+
+    counterEl.textContent = `${index + 1} of ${records.length}`;
+    prevBtn.disabled = records.length <= 1;
+    nextBtn.disabled = records.length <= 1;
 
     statusEl.textContent = `Live · ${records.length} response${records.length === 1 ? '' : 's'}`;
+  }
+
+  function goNext(){
+    if (records.length <= 1) return;
+    index = (index + 1) % records.length;
+    currentKey = recKey(records[index]);
+    renderStack();
+  }
+
+  function goPrev(){
+    if (records.length <= 1) return;
+    index = (index - 1 + records.length) % records.length;
+    currentKey = recKey(records[index]);
+    renderStack();
+  }
+
+  prevBtn.addEventListener('click', goPrev);
+  nextBtn.addEventListener('click', goNext);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'ArrowLeft') goPrev();
+  });
+
+  function applyNewRecords(newRecords){
+    newRecords.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    if (firstLoad){
+      records = newRecords;
+      index = 0;
+      currentKey = records.length ? recKey(records[0]) : null;
+      firstLoad = false;
+    } else {
+      const wasAtLatest = index === 0;
+      records = newRecords;
+      if (!records.length){
+        index = 0; currentKey = null;
+      } else if (wasAtLatest){
+        index = 0;
+        currentKey = recKey(records[0]);
+      } else {
+        const foundIdx = records.findIndex(r => recKey(r) === currentKey);
+        index = foundIdx > -1 ? foundIdx : Math.min(index, records.length - 1);
+        currentKey = recKey(records[index]);
+      }
+    }
+    renderStack();
   }
 
   async function load(){
@@ -410,11 +560,12 @@
       const res = await fetch(CSV_URL, { cache: 'no-store' });
       if (!res.ok) throw new Error('Bad response');
       const text = await res.text();
-      const records = rowsToRecords(parseCSV(text));
-      render(records);
+      const newRecords = rowsToRecords(parseCSV(text));
+      applyNewRecords(newRecords);
     } catch (err){
       if (firstLoad){
-        feedEl.style.display = 'none';
+        stage.style.display = 'none';
+        counterEl.style.display = 'none';
         errorBox.style.display = 'block';
         statusEl.textContent = 'Offline';
         dotEl.classList.remove('live');
