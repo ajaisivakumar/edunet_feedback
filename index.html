@@ -42,7 +42,7 @@
   .wrap{
     max-width:720px;
     margin:0 auto;
-    padding:22px 16px 60px;
+    padding:22px 10px 60px;
   }
 
   header{
@@ -121,24 +121,28 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:10px;
+    gap:4px;
   }
 
   .nav-btn{
     flex:none;
-    width:52px;
-    height:52px;
+    width:34px;
+    height:34px;
     border-radius:50%;
     border:1px solid var(--line);
     background:#fff;
     color:var(--ink);
-    font-size:24px;
+    font-size:16px;
     line-height:1;
     cursor:pointer;
     display:flex;
     align-items:center;
     justify-content:center;
     transition:border-color .15s ease, color .15s ease, transform .1s ease;
+  }
+  @media (min-width:700px){
+    .nav-btn{ width:48px; height:48px; font-size:22px; }
+    .stage{ gap:14px; }
   }
   .nav-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
   .nav-btn:active:not(:disabled){ transform:scale(.94); }
@@ -167,7 +171,7 @@
     position:relative;
     z-index:3;
     border-radius:4px;
-    padding:28px 22px 24px;
+    padding:26px 14px 22px;
     box-shadow:0 10px 26px rgba(30,20,10,.16);
     animation:pop .25s ease both;
     display:flex;
@@ -262,8 +266,8 @@
 
   .note-text{
     font-family:'Kalam', cursive;
-    font-size:21px;
-    line-height:1.6;
+    font-size:clamp(16px, 4.6vw, 21px);
+    line-height:1.55;
     color:var(--ink);
     white-space:pre-wrap;
     overflow-wrap:anywhere;
