@@ -125,6 +125,8 @@
   }
 
   .nav-btn{
+    position:relative;
+    z-index:10;
     flex:none;
     width:34px;
     height:34px;
@@ -164,8 +166,8 @@
     background:#EDE9DD;
     border:1px solid var(--line);
   }
-  .note-shadow.s1{ transform:rotate(-3deg) translateY(5px); z-index:1; }
-  .note-shadow.s2{ transform:rotate(2deg) translateY(3px); z-index:2; opacity:.85; }
+  .note-shadow.s1{ transform:translate(-7px, 6px); z-index:1; }
+  .note-shadow.s2{ transform:translate(7px, 3px); z-index:2; opacity:.85; }
 
   .note{
     position:relative;
@@ -366,6 +368,7 @@
   let records = [];
   let index = 0;
   let currentKey = null;
+  let lastRenderedKey = null;
   let firstLoad = true;
 
   function recKey(rec){ return rec.timestamp + '|' + rec.name; }
@@ -484,30 +487,39 @@
 
     const rec = records[index];
     const cls = deptClass(rec.department);
+    const key = recKey(rec);
 
-    noteStack.innerHTML = `
-      <div class="note-shadow s1"></div>
-      <div class="note-shadow s2"></div>
-      <div class="note ${cls}">
-        <div class="tape ${cls}"></div>
-        <div class="note-top">
-          <span class="note-name"></span>
-          <span class="note-when"></span>
+    if (key === lastRenderedKey && noteStack.querySelector('.note')){
+      // Same note still on screen (e.g. a background refresh) — update only
+      // the relative time, don't touch the DOM or scroll position.
+      const whenEl = noteStack.querySelector('.note-when');
+      if (whenEl) whenEl.textContent = relativeTime(rec.timestamp);
+    } else {
+      noteStack.innerHTML = `
+        <div class="note-shadow s1"></div>
+        <div class="note-shadow s2"></div>
+        <div class="note ${cls}">
+          <div class="tape ${cls}"></div>
+          <div class="note-top">
+            <span class="note-name"></span>
+            <span class="note-when"></span>
+          </div>
+          <div class="note-meta">
+            <span class="note-dept"></span>
+            <span class="note-date"></span>
+          </div>
+          <div class="note-body">
+            <p class="note-text"></p>
+          </div>
         </div>
-        <div class="note-meta">
-          <span class="note-dept"></span>
-          <span class="note-date"></span>
-        </div>
-        <div class="note-body">
-          <p class="note-text"></p>
-        </div>
-      </div>
-    `;
-    noteStack.querySelector('.note-name').textContent = rec.name;
-    noteStack.querySelector('.note-when').textContent = relativeTime(rec.timestamp);
-    noteStack.querySelector('.note-dept').textContent = shortDept(rec.department);
-    noteStack.querySelector('.note-date').textContent = formatDate(rec.date);
-    noteStack.querySelector('.note-text').textContent = rec.feedback;
+      `;
+      noteStack.querySelector('.note-name').textContent = rec.name;
+      noteStack.querySelector('.note-when').textContent = relativeTime(rec.timestamp);
+      noteStack.querySelector('.note-dept').textContent = shortDept(rec.department);
+      noteStack.querySelector('.note-date').textContent = formatDate(rec.date);
+      noteStack.querySelector('.note-text').textContent = rec.feedback;
+      lastRenderedKey = key;
+    }
 
     counterEl.textContent = `${index + 1} of ${records.length}`;
     prevBtn.disabled = records.length <= 1;
