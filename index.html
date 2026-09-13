@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills4Future feedback</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F5F1;
+    --ink:#1E2A32;
+    --ink-soft:#5B6B72;
+    --line:#E3E0D6;
+    --card:#FFFFFF;
+    --accent:#0F766E;
+    --accent-soft:#E4F2F0;
+    --dept-cse:#0F766E;
+    --dept-it:#4A5FC1;
+    --dept-mech:#C08A2E;
+    --dept-ece:#B4525A;
+    --dept-other:#64748B;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:32px 20px 80px;
+  }
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+    flex-wrap:wrap;
+    padding-bottom:28px;
+    margin-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(32px, 5vw, 44px);
+    line-height:1.05;
+    margin:0 0 6px;
+  }
+
+  header p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+
+  .header-right{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:8px;
+  }
+
+  .add-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--ink);
+    color:#fff;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    padding:11px 18px;
+    border-radius:8px;
+    transition:background .15s ease;
+    border:none;
+    cursor:pointer;
+  }
+  .add-btn:hover{ background:var(--accent); }
+  .add-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .status{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--accent);
+    flex-shrink:0;
+  }
+  .dot.live{ animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse{
+    0%,100%{ opacity:1; }
+    50%{ opacity:.35; }
+  }
+
+  .feed{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  @media (min-width:680px){
+    .feed{ grid-template-columns:1fr 1fr; }
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:3px solid var(--dept-other);
+    border-radius:6px;
+    padding:16px 18px;
+    animation:enter .35s ease both;
+  }
+  @keyframes enter{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .card, .dot.live{ animation:none; }
+  }
+
+  .card.cse{ border-left-color:var(--dept-cse); }
+  .card.it{ border-left-color:var(--dept-it); }
+  .card.mech{ border-left-color:var(--dept-mech); }
+  .card.ece{ border-left-color:var(--dept-ece); }
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:8px;
+  }
+
+  .card-name{
+    font-weight:600;
+    font-size:15px;
+  }
+
+  .card-when{
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  .card-dept{
+    display:inline-block;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+
+  .card-text{
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink);
+    white-space:pre-wrap;
+    margin:0;
+  }
+
+  .empty, .error{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--ink-soft);
+  }
+  .empty h2, .error h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:22px;
+    color:var(--ink);
+    margin:0 0 8px;
+  }
+  .error{ display:none; }
+  .error button{
+    margin-top:14px;
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:9px 16px;
+    border-radius:8px;
+    font-size:13px;
+    cursor:pointer;
+  }
+  .error button:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .skeleton{
+    height:96px;
+    border-radius:6px;
+    background:linear-gradient(90deg, var(--line) 25%, #EEEBE0 37%, var(--line) 63%);
+    background-size:400% 100%;
+    animation:shimmer 1.4s ease infinite;
+  }
+  @keyframes shimmer{
+    0%{ background-position:100% 0; }
+    100%{ background-position:0 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Skills4Future</h1>
+        <p>Feedback from the Edunet agentic AI program</p>
+      </div>
+      <div class="header-right">
+        <a class="add-btn" id="addBtn" href="#" target="_blank" rel="noopener">Add feedback</a>
+        <div class="status">
+          <span class="dot live" id="liveDot"></span>
+          <span id="statusText">Loading…</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="feed" id="feed">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+
+    <div class="error" id="errorBox">
+      <h2>Couldn't load feedback</h2>
+      <p>Check your connection and try again.</p>
+      <button id="retryBtn">Retry</button>
+    </div>
+  </div>
+
+<script>
+  // ---- Configuration ----
+  // 1. In your Google Form, open the Responses tab and create the linked Sheet.
+  // 2. In that Sheet: File > Share > Publish to web > select the responses
+  //    sheet/tab > format "Comma-separated values (.csv)" > Publish.
+  // 3. Paste the resulting URL below.
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEijSktyMFps2lbOAFbmWnsVq_fBDvRuU-4WGzcAyOFNYy0uurEWdkHqYMODZCIJYmsM0aCKd3CoSr/pub?output=csv";
+
+  // Paste the public Google Form URL (the one people fill out, not the edit link).
+  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdbmmTHeo_-FzT_Pd8ygLvQNYNpaz3HCngapg0JvTjN0fXY7Q/viewform?usp=header";
+
+  const POLL_MS = 20000;
+
+  document.getElementById('addBtn').href = FORM_URL;
+
+  const feedEl = document.getElementById('feed');
+  const statusEl = document.getElementById('statusText');
+  const dotEl = document.getElementById('liveDot');
+  const errorBox = document.getElementById('errorBox');
+  const retryBtn = document.getElementById('retryBtn');
+
+  let knownKeys = new Set();
+  let firstLoad = true;
+
+  function deptClass(dept){
+    const d = (dept || '').toLowerCase();
+    if (d.includes('computer')) return 'cse';
+    if (d.includes('information')) return 'it';
+    if (d.includes('mechanical')) return 'mech';
+    if (d.includes('electronics')) return 'ece';
+    return '';
+  }
+
+  function shortDept(dept){
+    const d = (dept || '').toLowerCase();
+    if (d.includes('computer')) return 'Computer Science & Engg';
+    if (d.includes('information')) return 'Information Technology';
+    if (d.includes('mechanical')) return 'Mechanical Engineering';
+    if (d.includes('electronics')) return 'Electronics & Comm. Engg';
+    return dept || 'Unknown department';
+  }
+
+  function relativeTime(dateStr){
+    const then = new Date(dateStr);
+    if (isNaN(then)) return '';
+    const diffSec = Math.round((Date.now() - then.getTime()) / 1000);
+    if (diffSec < 60) return 'just now';
+    const diffMin = Math.round(diffSec / 60);
+    if (diffMin < 60) return diffMin + (diffMin === 1 ? ' minute ago' : ' minutes ago');
+    const diffHr = Math.round(diffMin / 60);
+    if (diffHr < 24) return diffHr + (diffHr === 1 ? ' hour ago' : ' hours ago');
+    const diffDay = Math.round(diffHr / 24);
+    if (diffDay < 7) return diffDay + (diffDay === 1 ? ' day ago' : ' days ago');
+    return then.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+  }
+
+  // Minimal CSV parser that handles quoted fields, embedded commas/newlines.
+  function parseCSV(text){
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++){
+      const c = text[i];
+      if (inQuotes){
+        if (c === '"'){
+          if (text[i+1] === '"'){ field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ','){ row.push(field); field = ''; }
+        else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+        else if (c === '\r'){ /* ignore */ }
+        else field += c;
+      }
+    }
+    if (field.length || row.length){ row.push(field); rows.push(row); }
+    return rows.filter(r => r.some(f => f.trim() !== ''));
+  }
+
+  function rowsToRecords(rows){
+    if (!rows.length) return [];
+    const header = rows[0].map(h => h.trim().toLowerCase());
+    const idx = {
+      timestamp: header.findIndex(h => h.includes('timestamp')),
+      name: header.findIndex(h => h === 'name'),
+      dept: header.findIndex(h => h.includes('department')),
+      feedback: header.findIndex(h => h.includes('feedback')),
+    };
+    return rows.slice(1).map(r => ({
+      timestamp: idx.timestamp > -1 ? r[idx.timestamp] : '',
+      name: (idx.name > -1 ? r[idx.name] : '').trim() || 'Anonymous',
+      department: idx.dept > -1 ? r[idx.dept] : '',
+      feedback: idx.feedback > -1 ? r[idx.feedback] : '',
+    }));
+  }
+
+  function renderEmpty(){
+    feedEl.innerHTML = '';
+    feedEl.style.display = 'none';
+    let empty = document.getElementById('emptyBox');
+    if (!empty){
+      empty = document.createElement('div');
+      empty.id = 'emptyBox';
+      empty.className = 'empty';
+      empty.innerHTML = '<h2>No feedback yet</h2><p>Be the first to share yours.</p>';
+      feedEl.parentNode.insertBefore(empty, errorBox);
+    }
+    empty.style.display = 'block';
+  }
+
+  function renderCard(rec){
+    const card = document.createElement('div');
+    card.className = 'card ' + deptClass(rec.department);
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="card-name"></span>
+        <span class="card-when"></span>
+      </div>
+      <div class="card-dept"></div>
+      <p class="card-text"></p>
+    `;
+    card.querySelector('.card-name').textContent = rec.name;
+    card.querySelector('.card-when').textContent = relativeTime(rec.timestamp);
+    card.querySelector('.card-dept').textContent = shortDept(rec.department);
+    card.querySelector('.card-text').textContent = rec.feedback;
+    return card;
+  }
+
+  function render(records){
+    errorBox.style.display = 'none';
+    feedEl.style.display = 'grid';
+    const emptyBox = document.getElementById('emptyBox');
+    if (emptyBox) emptyBox.style.display = 'none';
+
+    if (!records.length){
+      renderEmpty();
+      statusEl.textContent = 'Live · 0 responses';
+      return;
+    }
+
+    // newest first
+    records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    if (firstLoad){
+      feedEl.innerHTML = '';
+      records.forEach(rec => {
+        knownKeys.add(rec.timestamp + '|' + rec.name);
+        feedEl.appendChild(renderCard(rec));
+      });
+      firstLoad = false;
+    } else {
+      records.forEach(rec => {
+        const key = rec.timestamp + '|' + rec.name;
+        if (!knownKeys.has(key)){
+          knownKeys.add(key);
+          feedEl.insertBefore(renderCard(rec), feedEl.firstChild);
+        }
+      });
+    }
+
+    statusEl.textContent = `Live · ${records.length} response${records.length === 1 ? '' : 's'}`;
+  }
+
+  async function load(){
+    try{
+      const res = await fetch(CSV_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Bad response');
+      const text = await res.text();
+      const records = rowsToRecords(parseCSV(text));
+      render(records);
+    } catch (err){
+      if (firstLoad){
+        feedEl.style.display = 'none';
+        errorBox.style.display = 'block';
+        statusEl.textContent = 'Offline';
+        dotEl.classList.remove('live');
+      }
+      console.error('Failed to load feedback:', err);
+    }
+  }
+
+  retryBtn.addEventListener('click', load);
+
+  load();
+  setInterval(load, POLL_MS);
+</script>
+</body>
+</html>
